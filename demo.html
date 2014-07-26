@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Map Embed Demos</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="//www.foxnews.com/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="//www.foxnews.com/favicon.ico" type="image/x-icon" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+
+    <style>
+
+        #doc { width: 600px; }
+        hr { margin: 80px 0; }
+
+    </style>
+
+    <script src="//global.fncstatic.com/static/v/all/js/ag.jquery.js"></script>
+    <script src="//global.fncstatic.com/static/v/all/js/require.js"></script>
+    <script src="//global.fncstatic.com/static/v/all/js/apps/map/main/base.js"></script>
+
+    <script>
+
+        $(document).ready(function(){
+
+            $(".fox-map").each(function(){
+                var target = $(this);
+
+                var config = {};
+
+                FOX_Maps.API.embed(target, config);
+
+                target.bind("FOX.Map.Rendered", function(event, info){
+                    
+                    var widget = info.widget,
+                        Controls = widget.Controls;
+
+                    Controls.dragging();
+
+                    // click
+                    Controls.click(function(item){
+                        //var name = item.data.name, fips = item.data.fipsCode;
+                        item.setAttr({ stroke: "#cccccc", "stroke-width":3, "stroke-opacity":1, "fill-opacity":0.6 });
+
+                        // you can colorize multiple items via array instead of object
+                        /*
+                        Controls.colorize({
+                            onChangeAnimate: false,
+                            fipsCode: item.data.fipsCode,
+                            attr: { fill:"#C01616" }
+                        });
+                        */
+                        
+                    }, function(item){
+                        
+                        item.clearSelection();
+
+                    });
+
+                    // hover
+                    Controls.hover(function(item){
+                        
+                        item.setAttr({ stroke: "#cccccc", "stroke-width":3, "stroke-opacity":1, "fill-opacity":0.6 });
+                        
+                    }, function(item){
+
+                        // default hover out will re-set the item to it's original attributes
+                        // do override default hover out, pass 3rd parameter as boolean true
+
+                    });
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+
+    <div id="page">
+
+        <div id="doc">
+
+            <header>
+                <h1>Basic Embed</h1>
+            </header>
+
+            <div>
+                <h3>USA Map</h3>
+                <div class="fox-map" data-widget-type="usa" data-widget-width="640" data-widget-height="480"></div>
+            </div>
+
+            <hr />
+            
+            <div>
+                <div class="fox-map" data-widget-type="new-york" data-widget-width="320" data-widget-height="180"></div>
+            </div>
+
+            <div>
+                <div class="fox-map" data-widget-type="new-hampshire" data-widget-width="320" data-widget-height="180"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

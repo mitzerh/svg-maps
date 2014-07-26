@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Map Embed Demos</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="//www.foxnews.com/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="//www.foxnews.com/favicon.ico" type="image/x-icon" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+
+    <style>
+
+        #doc { width: 600px; }
+        .fox-map { border: 1px solid #ccc; }
+
+    </style>
+
+    <script src="//qa.global.fncstatic.com/static/v/all/js/ag.jquery.js"></script>
+    <script src="//qa.global.fncstatic.com/static/v/all/js/require.js"></script>
+    <script src="main/base.js"></script>
+
+    <script>
+
+        $(document).ready(function(){
+
+            $(".fox-map").each(function(){
+                var target = $(this);
+
+                var config = {};
+
+                FOX_Maps.API.embed(target, config);
+
+                target.bind("FOX.Map.Rendered", function(event, info){
+                    
+                    var widget = info.widget,
+                        Controls = widget.Controls;
+
+                    Controls.dragging();
+
+                    // click
+                    Controls.click(function(item){
+                        //var name = item.data.name, fips = item.data.fipsCode;
+                        item.setAttr({ stroke: "#cccccc", "stroke-width":3, "stroke-opacity":1, "fill-opacity":0.6 });
+
+                        // you can colorize multiple items via array instead of object
+                        /*
+                        Controls.colorize({
+                            onChangeAnimate: false,
+                            fipsCode: item.data.fipsCode,
+                            attr: { fill:"#C01616" }
+                        });
+                        */
+                        
+                    }, function(item){
+                        
+                        item.clearSelection();
+
+                    });
+
+                    // hover
+                    Controls.hover(function(item){
+                        
+                        item.setAttr({ stroke: "#cccccc", "stroke-width":3, "stroke-opacity":1, "fill-opacity":0.6 });
+                        
+                    }, function(item){
+
+                        // default hover out will re-set the item to it's original attributes
+                        // do override default hover out, pass 3rd parameter as boolean true
+
+                    });
+
+                    // controls
+                    var controls = $(".controls");
+                    if (controls.length > 0) {
+
+                        controls.find(".zoom a").each(function(i){
+
+                            var type;
+
+                            switch(i) {
+                                case 0: type = "in"; break;
+                                case 1: type = "out"; break;
+                                case 2: type = "reset"; break;
+                            }
+
+                            $(this).bind("click", function(evt){
+                                evt.preventDefault();
+                                
+                                if (type === "reset") {
+                                    Controls.resetView();
+                                } else {
+                                    Controls.zoom(type);
+                                }
+
+                                return false;
+                            });
+                        });
+                        
+                        controls.find(".pan a").each(function(i){
+
+                            var dir;
+
+                            switch(i) {
+                                case 0: dir ="left"; break;
+                                case 1: dir ="right"; break;
+                                case 2: dir ="up"; break;
+                                case 3: dir ="down"; break;
+                            }
+
+                            $(this).bind("click", function(evt){
+                                evt.preventDefault();
+                                Controls.panning(dir);
+                                return false;
+                            });
+
+                        });
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+
+    <div id="page">
+
+        <div id="doc">
+
+            <header>
+                <h1>Basic Embed</h1>
+            </header>
+
+            <div>
+                <h3>USA Map</h3>
+                <div class="fox-map" data-widget-type="usa" data-widget-width="640" data-widget-height="480"></div>
+                <div class="controls">
+                    <p class="zoom">Zoom: <a href="#">IN</a> | <a href="#">OUT</a> | <a href="#">RESET</a></p>
+                    <p class="pan">Pan: <a href="#">Left</a> | <a href="#">Right</a> | <a href="#">Up</a> | <a href="#">Down</a></p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>
